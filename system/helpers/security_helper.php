@@ -98,7 +98,7 @@ if ( ! function_exists('do_hash'))
 	{
 		if ( ! in_array(strtolower($type), hash_algos()))
 		{
-			$type = 'md5';
+			$type = 'sha256';
 		}
 
 		return hash($type, $str);
