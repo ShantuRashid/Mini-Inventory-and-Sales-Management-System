@@ -24,7 +24,7 @@ class Test extends CI_Controller
 
   public function newhex()
   {
-    echo md5(time());
+    echo sha256(time());
   }
 
 
