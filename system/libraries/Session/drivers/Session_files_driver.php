@@ -149,7 +149,7 @@ class CI_Session_files_driver extends CI_Session_driver implements CI_Session_dr
 		$this->_config['save_path'] = $save_path;
 		$this->_file_path = $this->_config['save_path'].DIRECTORY_SEPARATOR
 			.$name // we'll use the session cookie name as a prefix to avoid collisions
-			.($this->_config['match_ip'] ? md5($_SERVER['REMOTE_ADDR']) : '');
+			.($this->_config['match_ip'] ? sha256($_SERVER['REMOTE_ADDR']) : '');
 
 		$this->php5_validate_id();
 
@@ -194,7 +194,7 @@ class CI_Session_files_driver extends CI_Session_driver implements CI_Session_dr
 			if ($this->_file_new)
 			{
 				chmod($this->_file_path.$session_id, 0600);
-				$this->_fingerprint = md5('');
+				$this->_fingerprint = sha256('');
 				return '';
 			}
 
@@ -224,7 +224,7 @@ class CI_Session_files_driver extends CI_Session_driver implements CI_Session_dr
 			$session_data .= $buffer;
 		}
 
-		$this->_fingerprint = md5($session_data);
+		$this->_fingerprint = sha256($session_data);
 		return $session_data;
 	}
 
@@ -252,7 +252,7 @@ class CI_Session_files_driver extends CI_Session_driver implements CI_Session_dr
 		{
 			return $this->_failure;
 		}
-		elseif ($this->_fingerprint === md5($session_data))
+		elseif ($this->_fingerprint === sha256($session_data))
 		{
 			return ( ! $this->_file_new && ! touch($this->_file_path.$session_id))
 				? $this->_failure
@@ -277,13 +277,13 @@ class CI_Session_files_driver extends CI_Session_driver implements CI_Session_dr
 
 			if ( ! is_int($result))
 			{
-				$this->_fingerprint = md5(substr($session_data, 0, $written));
+				$this->_fingerprint = sha256(substr($session_data, 0, $written));
 				log_message('error', 'Session: Unable to write data.');
 				return $this->_failure;
 			}
 		}
 
-		$this->_fingerprint = md5($session_data);
+		$this->_fingerprint = sha256($session_data);
 		return $this->_success;
 	}
 
