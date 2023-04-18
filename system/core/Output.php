@@ -583,7 +583,7 @@ class CI_Output {
 			}
 		}
 
-		$cache_path .= md5($uri);
+		$cache_path .= sha256($uri);
 
 		if ( ! $fp = @fopen($cache_path, 'w+b'))
 		{
@@ -677,7 +677,7 @@ class CI_Output {
 			}
 		}
 
-		$filepath = $cache_path.md5($uri);
+		$filepath = $cache_path.sha256($uri);
 
 		if ( ! file_exists($filepath) OR ! $fp = @fopen($filepath, 'rb'))
 		{
@@ -766,7 +766,7 @@ class CI_Output {
 			}
 		}
 
-		$cache_path .= md5($CI->config->item('base_url').$CI->config->item('index_page').ltrim($uri, '/'));
+		$cache_path .= sha256($CI->config->item('base_url').$CI->config->item('index_page').ltrim($uri, '/'));
 
 		if ( ! @unlink($cache_path))
 		{
