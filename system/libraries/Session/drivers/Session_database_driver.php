@@ -178,7 +178,7 @@ class CI_Session_database_driver extends CI_Session_driver implements CI_Session
 			// ID regeneration, so we need to explicitly set this to
 			// FALSE instead of relying on the default ...
 			$this->_row_exists = FALSE;
-			$this->_fingerprint = md5('');
+			$this->_fingerprint = sha256('');
 			return '';
 		}
 
@@ -189,7 +189,7 @@ class CI_Session_database_driver extends CI_Session_driver implements CI_Session
 			? base64_decode(rtrim($result->data))
 			: $result->data;
 
-		$this->_fingerprint = md5($result);
+		$this->_fingerprint = sha256($result);
 		$this->_row_exists = TRUE;
 		return $result;
 	}
@@ -237,7 +237,7 @@ class CI_Session_database_driver extends CI_Session_driver implements CI_Session
 
 			if ($this->_db->insert($this->_config['save_path'], $insert_data))
 			{
-				$this->_fingerprint = md5($session_data);
+				$this->_fingerprint = sha256($session_data);
 				$this->_row_exists = TRUE;
 				return $this->_success;
 			}
@@ -252,7 +252,7 @@ class CI_Session_database_driver extends CI_Session_driver implements CI_Session
 		}
 
 		$update_data = array('timestamp' => time());
-		if ($this->_fingerprint !== md5($session_data))
+		if ($this->_fingerprint !== sha256($session_data))
 		{
 			$update_data['data'] = ($this->_platform === 'postgre')
 				? base64_encode($session_data)
@@ -261,7 +261,7 @@ class CI_Session_database_driver extends CI_Session_driver implements CI_Session
 
 		if ($this->_db->update($this->_config['save_path'], $update_data))
 		{
-			$this->_fingerprint = md5($session_data);
+			$this->_fingerprint = sha256($session_data);
 			return $this->_success;
 		}
 
@@ -405,7 +405,7 @@ class CI_Session_database_driver extends CI_Session_driver implements CI_Session
 	{
 		if ($this->_platform === 'mysql')
 		{
-			$arg = md5($session_id.($this->_config['match_ip'] ? '_'.$_SERVER['REMOTE_ADDR'] : ''));
+			$arg = sha256($session_id.($this->_config['match_ip'] ? '_'.$_SERVER['REMOTE_ADDR'] : ''));
 			if ($this->_db->query("SELECT GET_LOCK('".$arg."', 300) AS ci_session_lock")->row()->ci_session_lock)
 			{
 				$this->_lock = $arg;
